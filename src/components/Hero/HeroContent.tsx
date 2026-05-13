@@ -2,7 +2,7 @@ type HeroContentProps = {
   theme: 'light' | 'dark';
 };
 
-export default function HeroContent({ theme }: HeroContentProps) {
+export default function HeroContent({ theme: _theme }: HeroContentProps) {
   const handleCTA = () => {
     const el = document.getElementById('projects');
     if (el) {
