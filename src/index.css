@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@utility h-screen-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
