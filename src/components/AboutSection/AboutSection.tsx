@@ -6,7 +6,7 @@ const ABOUT_PARAGRAPHS = [
   '工作之外，我是开源社区的积极贡献者，维护多个个人项目。我相信技术的价值在于解决实际问题，持续学习和分享是我的职业信条。',
 ]
 
-const BRAND_TAGS = ['赋范空间']
+const BRAND_TAGS = ['lesscode']
 
 export default function AboutSection() {
   const [imgError, setImgError] = useState(false)
