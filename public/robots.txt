@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zhangsan.github.io/my-website/sitemap.xml
+Sitemap: https://adastevy.github.io/my-website/sitemap.xml
