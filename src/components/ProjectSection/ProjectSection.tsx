@@ -1,5 +1,6 @@
-import { projects } from '../../data/projects'
 import ProjectCard from './ProjectCard'
+
+const projects: Array<{ name: string; description: string; image: string; githubUrl: string; tags: string[] }> = [];
 
 export default function ProjectSection() {
   return (

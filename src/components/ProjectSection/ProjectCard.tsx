@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import type { Project } from '../../data/projects'
+
+interface Project {
+  name: string;
+  description: string;
+  image: string;
+  githubUrl: string;
+  tags: string[];
+}
 
 type ProjectCardProps = {
   project: Project

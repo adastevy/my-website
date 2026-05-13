@@ -17,6 +17,21 @@
 2. 总结当前阶段的代码变更（改了什么文件、为什么这么改）。
 3. 等待我 review 并确认后，再继续下一 Phase。
 4. 严禁一次性实现所有任务。
+5. **发现偏差立即停止**：如果执行过程中发现与 spec/design 不一致，或上一步变更引入了新问题，立即停止并说明问题，等待我决策后再继续。
+
+## 复用优先
+
+- 优先使用已有组件和服务，避免重复造轮子
+- 新建文件前先搜索项目中是否有可复用的实现
+- 不创建重复的 utility 函数或 helper
+
+## 命名一致性
+
+- **Change 命名**：使用 domain-based 命名（如 `user-auth`、`ai-chat`），不用 feature-level 命名（如 `add-sidebar`、`fix-layout`）
+- **Spec 组织**：按业务域分组目录（如 `ui/`、`auth/`、`ai/`），每个域下按 capability 命名 spec 文件
+- **React 组件**：文件名和组件名使用 PascalCase（如 `ProjectCard.tsx`）
+- **API 端点**：路径使用 kebab-case（如 `/api/ai-chat`）
+- **数据库表**：表名和列名使用 snake_case（如 `user_sessions`）
 
 ## 代码标准
 

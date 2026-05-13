@@ -1,30 +1,33 @@
-import { useTheme } from './hooks/useTheme'
-import Navbar from './components/Navbar/Navbar'
-import ThemeToggle from './components/ThemeToggle/ThemeToggle'
-import Hero from './components/Hero/Hero'
-import AboutSection from './components/AboutSection/AboutSection'
-import ProjectSection from './components/ProjectSection/ProjectSection'
-import { SECTION_IDS } from './constants'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useTheme } from './hooks/useTheme';
+import { DashboardProvider } from './context/DashboardContext';
+import ThemeToggle from './components/ThemeToggle/ThemeToggle';
+import Dashboard from './components/Dashboard/Dashboard';
+import OverviewPage from './pages/OverviewPage';
+import RecommendationsPage from './pages/RecommendationsPage';
+import TrendsPage from './pages/TrendsPage';
+import GoalsPage from './pages/GoalsPage';
 
 function App() {
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <>
-      <header>
-        <Navbar />
-      </header>
-      <main>
+    <BrowserRouter>
+      <DashboardProvider>
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-        <section id={SECTION_IDS.home} className="scroll-mt-16">
-          <Hero theme={theme} />
-        </section>
-        <AboutSection />
-        <ProjectSection />
-        <section id={SECTION_IDS.contact} className="scroll-mt-16 min-h-screen" />
-      </main>
-    </>
-  )
+        <Routes>
+          <Route element={<Dashboard />}>
+            <Route index element={<Navigate to="/overview" replace />} />
+            <Route path="overview" element={<OverviewPage />} />
+            <Route path="recommendations" element={<RecommendationsPage />} />
+            <Route path="trends" element={<TrendsPage />} />
+            <Route path="goals" element={<GoalsPage />} />
+            <Route path="*" element={<Navigate to="/overview" replace />} />
+          </Route>
+        </Routes>
+      </DashboardProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

@@ -1,26 +1,23 @@
-import { useState, useEffect, useCallback } from 'react'
-import { NAV_ITEMS } from '../../constants'
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { NAV_ITEMS } from '../../constants';
 
 function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleNavClick = useCallback(
-    (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
-      e.preventDefault()
-      setMenuOpen(false)
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
-    },
-    []
-  )
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <nav
@@ -31,21 +28,20 @@ function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
-        <span className="text-xl font-bold text-gray-900 dark:text-white">
-          John Doe
-        </span>
+        <Link to="/" className="text-xl font-bold text-gray-900 dark:text-white">
+          StudyPal
+        </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex gap-8">
           {NAV_ITEMS.map((item) => (
-            <a
-              key={item.sectionId}
-              href={`#${item.sectionId}`}
-              onClick={(e) => handleNavClick(e, item.sectionId)}
-              className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors"
+            <Link
+              key={item.path}
+              to={item.path}
+              className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors text-sm font-medium"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -87,20 +83,19 @@ function Navbar() {
         <div className="md:hidden absolute top-16 left-0 w-full z-40 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md">
           <div className="flex flex-col px-4 py-4 gap-3">
             {NAV_ITEMS.map((item) => (
-              <a
-                key={item.sectionId}
-                href={`#${item.sectionId}`}
-                onClick={(e) => handleNavClick(e, item.sectionId)}
+              <Link
+                key={item.path}
+                to={item.path}
                 className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 rounded px-2"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
       )}
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
