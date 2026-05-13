@@ -7,6 +7,7 @@ import OverviewPage from './pages/OverviewPage';
 import RecommendationsPage from './pages/RecommendationsPage';
 import TrendsPage from './pages/TrendsPage';
 import GoalsPage from './pages/GoalsPage';
+import ChatPage from './pages/ChatPage';
 
 function App() {
   const { theme, toggleTheme } = useTheme();
@@ -22,6 +23,7 @@ function App() {
             <Route path="recommendations" element={<RecommendationsPage />} />
             <Route path="trends" element={<TrendsPage />} />
             <Route path="goals" element={<GoalsPage />} />
+            <Route path="chat" element={<ChatPage />} />
             <Route path="*" element={<Navigate to="/overview" replace />} />
           </Route>
         </Routes>

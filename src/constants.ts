@@ -3,6 +3,7 @@ export const ROUTES = {
   recommendations: '/recommendations',
   trends: '/trends',
   goals: '/goals',
+  chat: '/chat',
 } as const;
 
 export const NAV_ITEMS = [
@@ -10,4 +11,5 @@ export const NAV_ITEMS = [
   { label: 'AI推荐', path: ROUTES.recommendations },
   { label: '趋势', path: ROUTES.trends },
   { label: '目标', path: ROUTES.goals },
+  { label: 'AI 助手', path: ROUTES.chat },
 ] as const;
