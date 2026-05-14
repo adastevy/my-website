@@ -15,7 +15,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 from app.database import Base
-from app.models import user, chat  # noqa: F401 — import for autogenerate
+from app.models import user, chat, analytics  # noqa: F401 — import for autogenerate
 
 target_metadata = Base.metadata
 

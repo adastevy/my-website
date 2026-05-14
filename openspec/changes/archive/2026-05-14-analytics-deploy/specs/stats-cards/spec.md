@@ -1,8 +1,4 @@
-## Purpose
-
-数据统计卡片 — 展示学习时长、课程数、完成率、连续学习天数四项核心指标，响应式布局，暗色模式适配。
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Display learning statistics cards
 

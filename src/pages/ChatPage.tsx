@@ -1,28 +1,24 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import ChatMessageList, { type ChatMessage } from '../components/Chat/ChatMessageList';
 import ChatInput from '../components/Chat/ChatInput';
-
-const API_BASE = 'http://localhost:8000';
-
-function getToken(): string | null {
-  return localStorage.getItem('access_token');
-}
+import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../services/apiClient';
 
 export default function ChatPage() {
+  const { accessToken, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [streamingContent, setStreamingContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const nextIdRef = useRef(0);
+  /** Prevents double-send (e.g. Enter + form submit). */
+  const sendInFlightRef = useRef(false);
 
   const loadHistory = useCallback(async () => {
-    const token = getToken();
-    if (!token) return;
+    if (!accessToken) return;
     try {
-      const res = await fetch(`${API_BASE}/api/chat/history`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiFetch('/api/chat/history');
       if (res.ok) {
         const data = await res.json();
         setMessages(data.messages);
@@ -33,18 +29,19 @@ export default function ChatPage() {
     } catch {
       // history load failure is non-critical
     }
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     loadHistory();
   }, [loadHistory]);
 
   const handleSend = useCallback(async (message: string) => {
-    const token = getToken();
-    if (!token) {
+    if (!isAuthenticated) {
       setError('请先登录后再使用 AI 助手');
       return;
     }
+    if (sendInFlightRef.current) return;
+    sendInFlightRef.current = true;
     setError(null);
 
     const userMsg: ChatMessage = {
@@ -58,14 +55,12 @@ export default function ChatPage() {
 
     const controller = new AbortController();
     abortRef.current = controller;
+    /** Declared outside try so finally can read it; avoids double-append from Strict Mode setState. */
+    let assistantAccumulator = '';
 
     try {
-      const res = await fetch(`${API_BASE}/api/chat`, {
+      const res = await apiFetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({ message }),
         signal: controller.signal,
       });
@@ -106,6 +101,7 @@ export default function ChatPage() {
             if (parsed.error) {
               setError('AI 暂时不可用，请稍后重试');
             } else if (parsed.token) {
+              assistantAccumulator += parsed.token;
               setStreamingContent((prev) => prev + parsed.token);
             }
           } catch {
@@ -119,20 +115,19 @@ export default function ChatPage() {
       }
     } finally {
       setIsLoading(false);
-      setStreamingContent((current) => {
-        if (current) {
-          const assistantMsg: ChatMessage = {
-            id: nextIdRef.current++,
-            role: 'assistant',
-            content: current,
-          };
-          setMessages((prev) => [...prev, assistantMsg]);
-        }
-        return '';
-      });
+      if (assistantAccumulator) {
+        const assistantMsg: ChatMessage = {
+          id: nextIdRef.current++,
+          role: 'assistant',
+          content: assistantAccumulator,
+        };
+        setMessages((prev) => [...prev, assistantMsg]);
+      }
+      setStreamingContent('');
+      sendInFlightRef.current = false;
       abortRef.current = null;
     }
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem-2rem)] md:h-[calc(100vh-4rem-3rem)]">
